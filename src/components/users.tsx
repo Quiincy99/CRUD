@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Data from "../data.json"
+import Popup from "./popup";
 
 function Users() {
 
@@ -13,6 +14,19 @@ function Users() {
     });
 
     const [hide, setHide] = useState("hidden")
+    const [isOpen, setIsOpen] = useState(false);
+
+    const [user_2, setUser_2] = useState({
+        id: items.length,
+        email: "",
+        first_name: "",
+        last_name: "",
+        avatar: "https://yt3.ggpht.com/a/AATXAJwvicERKKyzjy9e717zoqf97Jkvvo9z8dkvpw=s900-c-k-c0xffffffff-no-rj-mo",
+    });
+
+    const togglePopup = () => {
+        setIsOpen(!isOpen);
+    }
 
     useEffect(() => {
     }, [items])
@@ -35,7 +49,7 @@ function Users() {
                             })
                         }}></input>
                         <br />
-                        <label className="me-2" htmlFor="#lname">First name</label> <br />
+                        <label className="me-2" htmlFor="#lname">Last name</label> <br />
                         <input id="fname" type="text" value={user.last_name} onChange={(event) => {
                             setUser({
                                 id: items.length,
@@ -76,19 +90,58 @@ function Users() {
                                     <h4>{item.first_name} {item.last_name}</h4>
                                     <p>{item.email}</p>
 
-                                    <div style={{
-                                        display:  `${hide}`
-                                    }}>
-                                        <input className="mb-2" type="text" placeholder="New first name" />
-                                        <input className="mb-2" type="text" placeholder="New last name" />
-                                        <input className="mb-2" type="text" placeholder="New email" />
-                                        <button className="btn btn-success mt-2 mb-4">Save</button>
-                                    </div>
-
                                     <br />
-                                    <button className="btn btn-primary me-2" onClick={ () =>
-                                        setHide(hide == "none"?"block":"none")
-                                    }>Update</button>
+                                    <button className="btn btn-primary me-2" onClick={togglePopup}>Update</button>
+
+                                    {isOpen && <Popup
+                                        content={<>
+                                            <div>
+                                                <input className="mb-2" type="text" placeholder="New first name" value={user_2.first_name} onChange={(event) => {
+                                                    setUser_2({
+                                                        id: item.id,
+                                                        first_name: event.target.value,
+                                                        last_name: user_2.last_name,
+                                                        email: user_2.email,
+                                                        avatar: item.avatar
+                                                    })
+                                                }} /> <br />
+                                                <input className="mb-2" type="text" placeholder="New last name" value={user_2.last_name} onChange={(event) => {
+                                                    setUser_2({
+                                                        id: item.id,
+                                                        first_name: user_2.first_name,
+                                                        last_name: event.target.value,
+                                                        email: user_2.email,
+                                                        avatar: item.avatar
+                                                    })
+                                                }} /> <br />
+                                                <input className="mb-2" type="text" placeholder="New email" value={user_2.email} onChange={(event) => {
+                                                    setUser_2({
+                                                        id: item.id,
+                                                        first_name: user_2.first_name,
+                                                        last_name: user_2.last_name,
+                                                        email: event.target.value,
+                                                        avatar: item.avatar
+                                                    })
+                                                }} /> <br />
+                                                <button className="btn btn-success mt-2" onClick={() => {
+                                                    const temp = {
+                                                        id: item.id,
+                                                        email: user_2.email,
+                                                        first_name: user_2.first_name,
+                                                        last_name: user_2.last_name,
+                                                        avatar: item.avatar,
+                                                    }
+                                                    
+                                                    let arr = items
+                                                    arr.map(e => e.id !== temp.id?e:temp)
+                                                    setItems(arr)
+                                                    
+                                                    togglePopup()
+                                                }}>Save</button>
+                                            </div>
+                                        </>}
+                                        handleClose={togglePopup}
+                                    />}
 
                                     <button onClick={() => {
                                         setItems(items.filter(e => e.id !== item.id))

@@ -75,13 +75,13 @@ function Users() {
 
                                     <br />
                                     <button className="btn btn-primary me-2" onClick={() => {
-                                        // console.log("ITEM----", item)
+                                        console.log("ITEM----", item)
                                         togglePopup()
                                     }}>Update</button>
 
                                     {isOpen && <Popup
                                         setUser={setUser}
-                                        user={item}
+                                        id={index}
                                         handleClose={togglePopup}
                                     />}
 
